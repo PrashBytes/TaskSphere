@@ -1,0 +1,39 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: tasksphere-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build:
+      context: ./backend
+    container_name: tasksphere-backend
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      PORT: 5000
+      MONGO_URI: mongodb://mongo:27017/tasksphere
+      JWT_SECRET: replace-with-a-long-secret
+      FRONTEND_URL: http://localhost:3000
+    ports:
+      - "5000:5000"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        API_BASE_URL: http://localhost:5000/api
+    container_name: tasksphere-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  mongo_data:
