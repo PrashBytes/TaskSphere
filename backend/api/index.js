@@ -1,3 +1,13 @@
 const app = require('../app');
+const { seedDemoData } = require('../utils/demoStore');
 
-module.exports = app;
+let seeded = false;
+
+module.exports = async (req, res) => {
+  if (!seeded) {
+    await seedDemoData();
+    seeded = true;
+  }
+  
+  return app(req, res);
+};
