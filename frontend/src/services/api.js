@@ -10,11 +10,22 @@ const readStoredAuth = () => {
   }
 };
 
+const resolveApiBaseUrl = () => {
+  const configuredBaseUrl = import.meta.env.API_BASE_URL || import.meta.env.VITE_API_BASE_URL;
+
+  if (configuredBaseUrl) {
+    return configuredBaseUrl;
+  }
+
+  if (window.location.port === '5173' || window.location.port === '5174') {
+    return 'http://localhost:5000/api';
+  }
+
+  return '/api';
+};
+
 const api = axios.create({
-  baseURL:
-    import.meta.env.API_BASE_URL ||
-    import.meta.env.VITE_API_BASE_URL ||
-    'http://localhost:5000/api',
+  baseURL: resolveApiBaseUrl(),
   headers: {
     'Content-Type': 'application/json'
   }

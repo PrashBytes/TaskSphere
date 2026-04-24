@@ -15,6 +15,7 @@ TaskSphere is a production-oriented multi-tenant task management MVP built for t
 
 ```text
 TaskSphere/
+├── api/
 ├── backend/
 │   ├── config/
 │   ├── controllers/
@@ -32,7 +33,9 @@ TaskSphere/
 │   │   ├── pages/
 │   │   └── services/
 │   └── index.html
-└── docker-compose.yml
+├── docker-compose.yml
+├── package.json
+└── vercel.json
 ```
 
 ## Core Security Decisions
@@ -167,20 +170,19 @@ Note: logs are restricted to admins and filtered by tenant.
 
 ### Vercel Frontend
 
-- Root directory: `frontend`
-- Build command: `npm run build`
-- Output directory: `dist`
-- Environment variable: `VITE_API_BASE_URL=https://your-backend-domain.vercel.app/api`
+- Root directory: project root
+- Build command: `npm run build --prefix frontend`
+- Output directory: `frontend/dist`
+- API routes are served from the same Vercel project at `/api/*`
 
 ### Vercel Backend
 
-- Root directory: `backend`
+- Same Vercel project, exposed at `/api/*`
 - Entry point: `api/index.js`
 - Runtime: Node.js serverless function via Express export
-- Environment variables:
+- Recommended environment variables:
   - `JWT_SECRET`
   - `FRONTEND_URL`
-  - `MONGO_URI` can remain empty in demo mode
 
 ## RBAC Rules Implemented
 
